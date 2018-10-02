@@ -8,7 +8,7 @@ Default output format [None]: json
 ```
 ### Deploy Wordpress to kubernetes
 ```sh
-$ git clone repo
+$ git clone https://github.com/invaleed/shopee.git
 $ kubectl create secret generic mysql-pass --from-literal=password=YOUR-PASSWORD
 $ kubectl create -f mysql-deployment.yaml
 $ kubectl create -f wordpress-deployment.yaml
