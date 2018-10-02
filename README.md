@@ -1,3 +1,8 @@
+### Kubernetes installation 
+```sh
+Please follow [howto-create-kubernetes-cluster-aws-kops.txt](https://github.com/invaleed/howto-create-kubernetes-cluster-aws-kops.txt)
+```
+
 ### Configure AWS Key
 ```sh
 $ aws configure

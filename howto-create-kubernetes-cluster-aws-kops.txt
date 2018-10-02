@@ -1,0 +1,73 @@
+
+Create Kubernetes Cluster With S3 Backend in AWS
+
+1. First we need an AWS account and access keys to start with. Login to your AWS console and generate access keys for your user by navigating to Users/Security credentials page.
+
+2. Install AWS CLI:
+
+	# OSX using Homebrew
+	brew install awscli
+
+	$ aws --version
+	aws-cli/1.15.50 Python/3.7.0 Darwin/17.2.0 botocore/1.10.49
+
+3. Install kops:
+
+	# OSX using Homebrew
+	brew install kops
+
+	$ kops version
+	Version 1.9.1
+
+4. Create a new IAM user or use an existing IAM user and grant following permissions:
+
+	AmazonEC2FullAccess
+	AmazonRoute53FullAccess
+	AmazonS3FullAccess
+	AmazonVPCFullAccess
+
+5. Configure the AWS CLI by providing the Access Key, Secret Access Key and the AWS region that you want the Kubernetes cluster to be installed:
+
+	$ aws configure
+	AWS Access Key ID []: __input_your_access_key__
+	AWS Secret Access Key []: --input_your_secret_access_key__
+	Default region name []: ap-southeast-1
+	Default output format [None]:
+
+6. Create an AWS S3 bucket for kops to persist its state:
+
+	bucket_name="bucket.anything.xyz"
+	aws s3api create-bucket --bucket ${bucket_name} --region ap-southeast-1 --create-bucket-configuration LocationConstraint=ap-southeast-1
+
+7. Enable versioning for the above S3 bucket:
+	
+	aws s3api put-bucket-versioning --bucket ${bucket_name} --versioning-configuration Status=Enabled
+
+8. Provide a name for the Kubernetes cluster and set the S3 bucket URL in the following environment variables:
+
+	export KOPS_CLUSTER_NAME="anything.xyz"
+	export KOPS_STATE_STORE=s3://${bucket_name}
+
+9. Create a Kubernetes cluster definition using kops by providing the required master & node count, master & node size, master & node size, and AWS zones.
+
+	kops create cluster \
+	--master-size m4.large \
+	--master-count=3 \
+	--node-count=3 \
+	--node-size=m4.large \
+	--zones=ap-southeast-1a,ap-southeast-1b,ap-southeast-1c \
+	--name=${KOPS_CLUSTER_NAME}
+
+10. Now, let’s create the Kubernetes cluster on AWS by executing kops update command:
+
+	kops update cluster --yes
+
+11. Check its status and wait until the cluster becomes ready:
+
+	kops validate cluster
+	kops get nodes
+
+
+
+
+
