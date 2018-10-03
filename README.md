@@ -21,7 +21,7 @@ $ kubectl create -f wordpress-deployment.yaml
 ```
 ### Access to Wordpress Installation
 ```sh
-$ kubectl describe svc ingress-nginx -n ingress-nginx |grep LoadBalancer|awk '{print $3};'
+$ kubectl describe svc wordpress |grep LoadBalancer|awk '{print $3};'
 $ curl http://EXTERNAL_IP
 ```
 ### Increase & Decrease Capacity (Scaling)
